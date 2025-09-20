@@ -35,4 +35,17 @@ def image():
                 <h1>Наофуми Иватани<h1>
                 <img scr="''' + path + '''">
             </body>
-        <html>'''
+        </html>'''
+
+count = 0
+@app.route('/counter')
+def counter():
+    global count
+    count += 1
+    return '''
+<!doctype html>
+<html>
+    <body>
+        Сколько раз вы сюда заходили ''' + str(count) + '''
+    <body>
+</html>'''
