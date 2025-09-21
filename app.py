@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request
+from flask import Flask, url_for, request, redirect
 import datetime
 app = Flask(__name__)
 
@@ -52,8 +52,24 @@ def counter():
     <body>
         Сколько раз вы сюда заходили ''' + str(count) + '''
         <hr>
-        Дата и время: ''' + time + '''<be>
+        Дата и время: ''' + time + '''<br>
         Запрошенный адрес: ''' + url + '''<br>
         Ваш IP адрес: ''' + client_ip +'''<br>
     <body>
 </html>'''
+@app.route("/info")
+def info():
+    return redirect("/author")
+
+@app.route("/lab1/created")
+def created():
+    return '''
+<!doctype html>
+<html>
+    <html>
+        <body>
+            <h1>Создано успешно</h1>
+            <div><i>что-то создано</i></div>
+        </body>
+    </html>
+''', 201
