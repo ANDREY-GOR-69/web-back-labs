@@ -33,14 +33,23 @@ def author():
 
 @app.route("/image")
 def image():
-    path = url_for("static", filename="shield-hero.jpg")
-    return '''<!doctupe html>
-        <html>
-            <body>
-                <h1>Наофуми Иватани<h1>
-                <img scr="''' + path + '''">
-            </body>
-        </html>'''
+    image_path = url_for("static", filename="shield-hero.jpg")
+    css_path = url_for("static", filename="lab1.css")
+    
+    return '''<!DOCTYPE html>
+<html>
+    <head>
+        <title>Наофуми Иватани</title>
+        <link rel="stylesheet" href="''' + css_path + '''">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Наофуми Иватани</h1>
+            <img src="''' + image_path + '''" alt="Наофуми Иватани">
+            <p class="description">Главный герой аниме "Восхождение героя щита"</p>
+        </div>
+    </body>
+</html>'''
 
 count = 0
 @app.route('/counter')
@@ -58,8 +67,8 @@ def counter():
         <hr>
         Дата и время: ''' + time + '''<br>
         Запрошенный адрес: ''' + url + '''<br>
-        Ваш IP адрес: ''' + client_ip +'''<br>
-    <body>
+        Ваш IP адрес: ''' + client_ip + '''<br>
+    </body>
 </html>'''
 @app.route("/info")
 def info():
