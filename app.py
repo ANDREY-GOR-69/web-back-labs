@@ -3,6 +3,67 @@ import datetime
 app = Flask(__name__)
 
 @app.route("/")
+@app.route("/index")
+def index():
+    return '''<!doctype html>
+<html>
+    <head>
+        <title>НГТУ, ФБ, Лабораторные работы</title>
+    </head>
+    <body>
+        <header>
+            НГТУ, ФБ, WEB-программирование, часть 2. Список лабораторных
+        </header>
+        <main>
+            <menu>
+                <li><a href="''' + url_for('lab1') + '''">Первая лабораторная</a></li>
+            </menu>
+        </main>
+        <footer>
+            Горшков Андрей Максимович, ФБИ-33, 3 курс, 2025
+        </footer>
+    </body>
+</html>'''
+
+@app.route("/lab1")
+def lab1():
+    return '''<!doctype html>
+<html>
+    <head>
+        <title>Лабораторная 1</title>
+    </head>
+    <body>
+        <header>
+            НГТУ, ФБ, WEB-программирование, часть 2. Список лабораторных
+        </header>
+        <main>
+            <h1>Первая лабораторная работа</h1>
+            
+            <p>Flask — фреймворк для создания веб-приложений на языке
+            программирования Python, использующий набор инструментов
+            Werkzeug, а также шаблонизатор Jinja2. Относится к категории так
+            называемых микрофреймворков — минималистичных каркасов
+            веб-приложений, сознательно предоставляющих лишь самые ба-
+            зовые возможности.</p>
+            
+            <a href="''' + url_for('index') + '''">Вернуться на главную</a>
+            
+            <h2>Задания лабораторной работы:</h2>
+            <ul>
+                <li><a href="''' + url_for('web') + '''">Web-сервер на Flask</a></li>
+                <li><a href="''' + url_for('author') + '''">Об авторе</a></li>
+                <li><a href="''' + url_for('image') + '''">Изображение</a></li>
+                <li><a href="''' + url_for('counter') + '''">Счетчик посещений</a></li>
+                <li><a href="''' + url_for('info') + '''">Перенаправление</a></li>
+                <li><a href="''' + url_for('created') + '''">Создано</a></li>
+            </ul>
+        </main>
+        <footer>
+            Горшков Андрей Максимович, ФБИ-33, 3 курс, 2025
+        </footer>
+    </body>
+</html>'''
+
 @app.route("/lab1/web")
 def web():
     return '''<!doctype html>
@@ -24,11 +85,11 @@ def author():
     return '''<!doctype html>
         <html>
             <body>
-                <p>Студент: ''' + name + '''<p>
-                <p>Группа: ''' + group + '''<p>
-                <p>Факультет: ''' + faculty + '''<p>
-                <a href='/web'>web</a>
-            <body>
+                <p>Студент: ''' + name + '''</p>
+                <p>Группа: ''' + group + '''</p>
+                <p>Факультет: ''' + faculty + '''</p>
+                <a href="''' + url_for('web') + '''">web</a>
+            </body>
         </html>'''
 
 @app.route("/lab1/image")
@@ -72,26 +133,27 @@ def counter():
         <a href="''' + url_for('reset_counter') + '''">Сбросить счетчик</a>
     </body>
 </html>'''
-@app.route('lab1/reset_counter')
+
+@app.route('/lab1/reset_counter')
 def reset_counter():
     global count
     count = 0
     return redirect(url_for('counter'))
+
 @app.route("/lab1/info")
 def info():
-    return redirect("/author")
+    return redirect("/lab1/author")
 
 @app.route("/lab1/created")
 def created():
     return '''
 <!doctype html>
 <html>
-    <html>
-        <body>
-            <h1>Создано успешно</h1>
-            <div><i>что-то создано</i></div>
-        </body>
-    </html>
+    <body>
+        <h1>Создано успешно</h1>
+        <div><i>что-то создано</i></div>
+    </body>
+</html>
 ''', 201
 
 @app.errorhandler(404)
