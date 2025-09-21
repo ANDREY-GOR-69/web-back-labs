@@ -1,5 +1,5 @@
 from flask import Flask, url_for, request, redirect
-import datetime
+from datetime import datetime
 app = Flask(__name__)
 
 @app.route("/")
@@ -167,37 +167,78 @@ def created():
 </html>
 ''', 201
 
+not_found_logs = []
+
 @app.errorhandler(404)
 def not_found(err):
-    css_path = url_for("static", filename="error.css")
-    image_path = url_for("static", filename="404-image.png")
+    client_ip = request.remote_addr
+    access_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    requested_url = request.url
+    user_agent = request.headers.get('User-Agent', 'Неизвестно')
     
-    return '''
+    log_entry = {
+        'ip': client_ip,
+        'time': access_time,
+        'url': requested_url,
+        'user_agent': user_agent
+    }
+    not_found_logs.append(log_entry)
+    
+    if len(not_found_logs) > 20:
+        not_found_logs.pop(0)
+    
+    log_html = '<h3>История 404 ошибок:</h3><table border="1" style="width: 100%; border-collapse: collapse;">'
+    log_html += '<tr><th>Время</th><th>IP-адрес</th><th>Запрошенный URL</th><th>User-Agent</th></tr>'
+    
+    for entry in reversed(not_found_logs):
+        log_html += f'''
+        <tr>
+            <td style="padding: 5px;">{entry["time"]}</td>
+            <td style="padding: 5px;">{entry["ip"]}</td>
+            <td style="padding: 5px;">{entry["url"]}</td>
+            <td style="padding: 5px; font-size: 12px;">{entry["user_agent"][:50]}...</td>
+        </tr>'''
+    
+    log_html += '</table>'
+    
+    return f'''
 <!doctype html>
 <html>
     <head>
         <title>404 - Страница не найдена</title>
-        <link rel="stylesheet" href="''' + css_path + '''">
+        <style>
+            body {{
+                font-family: Arial, sans-serif;
+                margin: 40px;
+                background-color: #f5f5f5;
+            }}
+            .container {{
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }}
+            h1 {{ color: #d32f2f; }}
+            .info {{ background: #f0f0f0; padding: 15px; border-radius: 5px; margin: 20px 0; }}
+            table {{ margin-top: 20px; font-size: 14px; width: 100%; border-collapse: collapse; }}
+            th {{ background: #e0e0e0; padding: 10px; text-align: left; }}
+            td {{ padding: 8px; border-bottom: 1px solid #ddd; }}
+        </style>
     </head>
     <body>
-        <div class="error-container">
-            <div class="error-content">
-                <img src="''' + image_path + '''" alt="Ошибка 404" class="error-image">
-                <h1>404 - Заблудились в цифровом пространстве?</h1>
-                <p>Кажется, вы пытаетесь найти страницу, которая от нас сбежала!</p>
-                <p>Возможно, она отправилась в путешествие по серверным просторам...</p>
-                <div class="error-details">
-                    <p>Не волнуйтесь! Вы можете:</p>
-                    <ul>
-                        <li>Вернуться на <a href="''' + url_for('index') + '''">главную страницу</a></li>
-                        <li>Посмотреть <a href="''' + url_for('lab1') + '''">лабораторные работы</a></li>
-                        <li>Попробовать найти нужное через меню навигации</li>
-                    </ul>
-                </div>
-                <div class="error-quote">
-                    <p>"В мире кода даже ошибки ведут к новым открытиям"</p>
-                </div>
+        <div class="container">
+            <h1>404 - Страница не найдена</h1>
+            
+            <div class="info">
+                <p><strong>Ваш IP-адрес:</strong> {client_ip}</p>
+                <p><strong>Дата и время доступа:</strong> {access_time}</p>
+                <p><strong>Запрошенный URL:</strong> {requested_url}</p>
             </div>
+            
+            <p>К сожалению, запрашиваемая страница не существует.</p>
+            <p>Вернитесь на <a href="{url_for('index')}">главную страницу</a> или воспользуйтесь меню навигации.</p>
+            
+            {log_html}
         </div>
     </body>
 </html>
