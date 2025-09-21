@@ -4,12 +4,16 @@ app = Flask(__name__)
 
 @app.route("/")
 @app.route("/web")
-def start():
+def web():
     return '''<!doctype html>
         <html>
-           <body>
+            <body>
                <h1>web-сервер на flask</h1>
-                   </html>'''
+            </body>
+        </html>''', 200, {
+            'X-Server': 'sample',
+            'Content-Type': 'text/plain; charset=utf-8'
+        }
 
 @app.route("/author")
 def author():
