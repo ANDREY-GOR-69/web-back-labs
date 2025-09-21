@@ -48,14 +48,19 @@ def lab1():
             
             <a href="''' + url_for('index') + '''">Вернуться на главную</a>
             
-            <h2>Задания лабораторной работы:</h2>
+            <h2>Список роутов</h2>
             <ul>
                 <li><a href="''' + url_for('web') + '''">Web-сервер на Flask</a></li>
                 <li><a href="''' + url_for('author') + '''">Об авторе</a></li>
                 <li><a href="''' + url_for('image') + '''">Изображение</a></li>
                 <li><a href="''' + url_for('counter') + '''">Счетчик посещений</a></li>
                 <li><a href="''' + url_for('info') + '''">Перенаправление</a></li>
-                <li><a href="''' + url_for('created') + '''">Создано</a></li>
+                <li><a href="''' + url_for('unauthorized') + '''">401</a></li>
+                <li><a href="''' + url_for('payment_required') + '''">402</a></li>
+                <li><a href="''' + url_for('forbidden') + '''">403</a></li>
+                <li><a href="''' + url_for('method_not_allowed') + '''">405</a></li>
+                <li><a href="''' + url_for('teapot') + '''">418</a></li>
+                <li><a href="''' + url_for('server_error_test') + '''">Тест ошибки 500</a></li>
             </ul>
         </main>
         <footer>
