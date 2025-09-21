@@ -97,7 +97,7 @@ def image():
     image_path = url_for("static", filename="shield-hero.jpg")
     css_path = url_for("static", filename="lab1.css")
     
-    return '''<!DOCTYPE html>
+    html_content = '''<!DOCTYPE html>
 <html>
     <head>
         <title>Наофуми Иватани</title>
@@ -111,7 +111,13 @@ def image():
         </div>
     </body>
 </html>'''
-
+    return html_content, 200, {
+        'Content-Language': 'ru',
+        'X-Anime-Character': 'Naofumi Iwatani',
+        'X-Series-Name': 'The Rising of the Shield Hero',
+        'X-Server-Technology': 'Flask Python Framework',
+        'Content-Type': 'text/html; charset=utf-8'
+    }
 count = 0
 @app.route('/lab1/counter')
 def counter():
