@@ -158,21 +158,39 @@ def created():
 
 @app.errorhandler(404)
 def not_found(err):
-    return "нет такой страницы", 404
-@app.route('/400')
-def bad_request():
+    css_path = url_for("static", filename="error.css")
+    image_path = url_for("static", filename="404-image.png")
+    
     return '''
 <!doctype html>
 <html>
     <head>
-        <title>400 Bad Request</title>
+        <title>404 - Страница не найдена</title>
+        <link rel="stylesheet" href="''' + css_path + '''">
     </head>
     <body>
-        <h1>400 Bad Request</h1>
-        <p>Сервер не может обработать запрос из-за синтаксической ошибки.</p>
+        <div class="error-container">
+            <div class="error-content">
+                <img src="''' + image_path + '''" alt="Ошибка 404" class="error-image">
+                <h1>404 - Заблудились в цифровом пространстве?</h1>
+                <p>Кажется, вы пытаетесь найти страницу, которая от нас сбежала!</p>
+                <p>Возможно, она отправилась в путешествие по серверным просторам...</p>
+                <div class="error-details">
+                    <p>Не волнуйтесь! Вы можете:</p>
+                    <ul>
+                        <li>Вернуться на <a href="''' + url_for('index') + '''">главную страницу</a></li>
+                        <li>Посмотреть <a href="''' + url_for('lab1') + '''">лабораторные работы</a></li>
+                        <li>Попробовать найти нужное через меню навигации</li>
+                    </ul>
+                </div>
+                <div class="error-quote">
+                    <p>"В мире кода даже ошибки ведут к новым открытиям"</p>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
-''', 400
+''', 404
 
 @app.route('/401')
 def unauthorized():
@@ -249,3 +267,55 @@ def teapot():
     </body>
 </html>
 ''', 418
+@app.route('/server_error')
+def server_error_test():
+    result = 10 / 0
+    return "Этот код никогда не выполнится"
+
+@app.errorhandler(500)
+def internal_server_error(err):
+    return '''
+<!doctype html>
+<html>
+    <head>
+        <title>500 - Ошибка сервера</title>
+    </head>
+    <body>
+        <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+            <h1 style="color: #d32f2f;">500 - Внутренняя ошибка сервера</h1>
+            <p>Что-то пошло не так на нашей стороне. Не волнуйтесь, мы уже работаем над решением!</p>
+            
+            <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <p><strong>Возможные причины:</strong></p>
+                <ul style="text-align: left; max-width: 300px; margin: 0 auto;">
+                    <li>Временные технические неполадки</li>
+                    <li>Ошибка в коде приложения</li>
+                    <li>Проблемы с подключением к базе данных</li>
+                </ul>
+            </div>
+            
+            <div style="background: #ffebee; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <p><strong>Что вы можете сделать:</strong></p>
+                <ul style="text-align: left; max-width: 300px; margin: 0 auto;">
+                    <li>Обновите страницу через несколько минут</li>
+                    <li>Вернитесь на <a href="''' + url_for('index') + '''">главную страницу</a></li>
+                    <li>Сообщите об ошибке администратору</li>
+                </ul>
+            </div>
+            
+            <div style="margin: 25px 0;">
+                <details>
+                    <summary><strong>Техническая информация (для разработчиков)</strong></summary>
+                    <p>Код ошибки: 500 Internal Server Error</p>
+                    <p>Тип ошибки: ''' + str(type(err).__name__) + '''</p>
+                    <p>Сообщение: ''' + str(err) + '''</p>
+                </details>
+            </div>
+            
+            <div style="font-style: italic; color: #666;">
+                <p>"Каждая ошибка - это шаг к более стабильному коду"</p>
+            </div>
+        </div>
+    </body>
+</html>
+''', 500
