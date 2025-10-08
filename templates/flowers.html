@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Горшков Андрей. {% block lab %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css')}}">
+</head>
+<body>
+    <h1>Список цветов</h1>
+
+    {% if flowers %}
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>№</th>
+            <th>Название</th>
+            <th>Цена (₽)</th>
+            <th>Действие</th>
+        </tr>
+        {% for flower in flowers %}
+        <tr>
+            <td>{{ loop.index0 }}</td>
+            <td>{{ flower.name }}</td>
+            <td>{{ flower.price }}</td>
+            <td><a href="{{ url_for('delete_flower', flower_id=loop.index0) }}">Удалить</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>Список цветов пуст</p>
+    {% endif %}
+
+    <hr>
+
+    <h2>Добавить новый цветок</h2>
+    <form action="{{ url_for('add_flower') }}" method="post">
+        <p><label>Название: <input type="text" name="name" required></label></p>
+        <p><label>Цена: <input type="number" name="price" min="1" required></label></p>
+        <button type="submit">Добавить</button>
+    </form>
+
+    <p><a href="{{ url_for('clear_flowers') }}">🗑 Удалить все цветы</a></p>
+
+    <footer>
+        &copy; Горшков Андрей, ФБИ-33, 3 курс, 2025
+    </footer>
+</body>
+</html>
