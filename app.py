@@ -378,27 +378,78 @@ def a():
 def a2():
     return 'со слэшем'
 flower_list = ['роза', 'тюльпан', 'незабудка', 'ромашка']
+
 @app.route('/lab2/flowers/<int:flower_id>')
-def frowers(flower_id):
-    if flower_id >= len(flower_list):
+def flowers(flower_id):
+    if flower_id >= len(flower_list) or flower_id < 0:
         abort(404)
     else:
-        return "id=" + flower_list[flower_id]
-    
+        flower_name = flower_list[flower_id]
+        return f"""
+<!doctype html>
+<html>
+    <body>
+        <h1>Цветок с ID {flower_id}</h1>
+        <p>Название: <b>{flower_name}</b></p>
+        <p><a href="/lab2/flowers_list">Посмотреть все цветы</a></p>
+    </body>
+</html>
+"""
+
 @app.route('/lab2/flowers/<name>')
 def add_flower(name):
     flower_list.append(name)
+    return f"""
+<!doctype html>
+<html>
+    <body>
+        <h1>Добавлен цветок</h1>
+        <p>Название нового цветка: <b>{name}</b></p>
+        <p>Всего цветов: {len(flower_list)}</p>
+        <p>Полный список: {flower_list}</p>
+        <p><a href="/lab2/flowers_list">Посмотреть все цветы</a></p>
+    </body>
+</html>
+"""
+
+@app.route('/lab2/flowers/')
+def add_flower_no_name():
+    return """
+<!doctype html>
+<html>
+    <body>
+        <h1>Ошибка 400</h1>
+        <p style="color:red;">Вы не задали имя цветка!</p>
+        <p><a href="/lab2/flowers_list">Посмотреть все цветы</a></p>
+    </body>
+</html>
+""", 400
+
+@app.route('/lab2/flowers_list')
+def show_flowers():
+    flowers_html = "<ul>" + "".join([f"<li>{f}</li>" for f in flower_list]) + "</ul>"
     return f'''
 <!doctype html>
 <html>
     <body>
-    <h1>Добавлен цветок</h1>
-    <p>Название нового цветка: {name}</p>
-    <p>Всего цветов: {len(flower_list)}</p>
-    <p>Полный список: {flower_list}</p>
+        <h1>Список всех цветов</h1>
+        <p>Всего цветов: {len(flower_list)}</p>
+        {flowers_html}
+        <p><a href="/lab2/clear_flowers">Очистить список</a></p>
     </body>
 </html>
 '''
+@app.route('/lab2/clear_flowers')
+def clear_flowers():
+    flower_list.clear()
+    return '''
+<!doctype html>
+<html>
+    <body>
+        <h1>Список цветов очищен</h1>
+        <p><a href="/lab2/flowers_list">Посмотреть все цветы</a></p>
+    </body>
+</html>'''
 @app.route('/lab2/example')
 def example():
     name = 'Горшков Андрей'
@@ -415,3 +466,7 @@ def example():
 @app.route('/lab2/')
 def lab2():
     return render_template('lab2.html')
+@app.route('/lab2/filters')
+def filters():
+    phrase = "0 <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..."
+    return render_template('filters.html', phrase=phrase)
