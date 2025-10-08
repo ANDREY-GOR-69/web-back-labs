@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Горшков Андрей. {% block lab %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css')}}">
+</head>
+<body>
+    <h1>Ягоды</h1>
+    <div>
+        {% for berry in berries %}
+        <div>
+            <img src="{{ url_for('static', filename=berry.img) }}" alt="{{ berry.name }}">
+            <div>
+                <h3>{{ berry.name }}</h3>
+                <p>{{ berry.desc }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <footer>
+        &copy; Горшков Андрей, ФБИ-33, 3 курс, 2025
+    </footer>
+</body>
+</html>
