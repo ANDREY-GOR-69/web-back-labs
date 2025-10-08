@@ -504,3 +504,19 @@ def calc(a, b):
     </body>
 </html>
 '''
+books = [
+    {"author": "Фёдор Достоевский", "title": "Преступление и наказание", "genre": "Роман", "pages": 640},
+    {"author": "Лев Толстой", "title": "Война и мир", "genre": "Роман-эпопея", "pages": 1225},
+    {"author": "Александр Пушкин", "title": "Евгений Онегин", "genre": "Роман в стихах", "pages": 320},
+    {"author": "Михаил Булгаков", "title": "Мастер и Маргарита", "genre": "Фантастика", "pages": 480},
+    {"author": "Иван Тургенев", "title": "Отцы и дети", "genre": "Роман", "pages": 370},
+    {"author": "Николай Гоголь", "title": "Мёртвые души", "genre": "Сатира", "pages": 420},
+    {"author": "Антон Чехов", "title": "Палата №6", "genre": "Повесть", "pages": 95},
+    {"author": "Даниэл Киз", "title": "Цветы для Элджернона", "genre": "Фантастика", "pages": 310},
+    {"author": "Джордж Оруэлл", "title": "1984", "genre": "Антиутопия", "pages": 350},
+    {"author": "Рэй Брэдбери", "title": "451° по Фаренгейту", "genre": "Фантастика", "pages": 256}
+]
+
+@app.route('/lab2/books')
+def show_books():
+    return render_template('books.html', books=books)
