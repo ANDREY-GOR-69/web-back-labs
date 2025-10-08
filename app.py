@@ -470,3 +470,37 @@ def lab2():
 def filters():
     phrase = "0 <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..."
     return render_template('filters.html', phrase=phrase)
+
+@app.route('/lab2/calc/')
+def calc_default():
+    return redirect('/lab2/calc/1/1')
+
+@app.route('/lab2/calc/<int:a>')
+def calc_one_arg(a):
+    return redirect(f'/lab2/calc/{a}/1')
+
+@app.route('/lab2/calc/<int:a>/<int:b>')
+def calc(a, b):
+    if b == 0:
+        div_result = "Ошибка: деление на ноль"
+    else:
+        div_result = a / b
+
+    return f'''
+<!doctype html>
+<html>
+    <body>
+        <h1>Калькулятор</h1>
+        <p>Первое число: {a}</p>
+        <p>Второе число: {b}</p>
+        <ul>
+            <li>Сумма: {a + b}</li>
+            <li>Разность: {a - b}</li>
+            <li>Произведение: {a * b}</li>
+            <li>Деление: {div_result}</li>
+            <li>Возведение в степень: {a ** b}</li>
+        </ul>
+        <p><a href="/lab2/calc/">Попробовать снова с 1 и 1</a></p>
+    </body>
+</html>
+'''
