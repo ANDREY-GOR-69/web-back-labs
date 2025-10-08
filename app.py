@@ -100,7 +100,7 @@ def author():
 @app.route("/lab1/image")
 def image():
     image_path = url_for("static", filename="shield-hero.jpg")
-    css_path = url_for("static", filename="lab1.css")
+    css_path = url_for("static", filename="main.css")
     
     html_content = '''<!DOCTYPE html>
 <html>
