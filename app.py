@@ -1,6 +1,10 @@
 from flask import Flask, url_for, request, redirect, abort, render_template
 from datetime import datetime
+from lab1 import lab1
+from lab2 import lab2
 app = Flask(__name__)
+app.register_blueprint(lab1)
+app.register_blueprint(lab2)
 
 @app.route("/")
 @app.route("/index")
@@ -16,8 +20,8 @@ def index():
         </header>
         <main>
             <menu>
-                <li><a href="''' + url_for('lab1') + '''">Первая лабораторная</a></li>
-                <li><a href="''' + url_for('lab2') + '''">Вторая лабораторная</a></li>
+                <li><a href="''' + url_for('lab1.lab') + '''">Первая лабораторная</a></li>
+                <li><a href="''' + url_for('lab2.lab') + '''">Вторая лабораторная</a></li>
             </menu>
         </main>
         <footer>
@@ -25,148 +29,6 @@ def index():
         </footer>
     </body>
 </html>'''
-
-@app.route("/lab1")
-def lab1():
-    return '''<!doctype html>
-<html>
-    <head>
-        <title>Лабораторная 1</title>
-    </head>
-    <body>
-        <header>
-            НГТУ, ФБ, WEB-программирование, часть 2. Список лабораторных
-        </header>
-        <main>
-            <h1>Первая лабораторная работа</h1>
-            
-            <p>Flask — фреймворк для создания веб-приложений на языке
-            программирования Python, использующий набор инструментов
-            Werkzeug, а также шаблонизатор Jinja2. Относится к категории так
-            называемых микрофреймворков — минималистичных каркасов
-            веб-приложений, сознательно предоставляющих лишь самые ба-
-            зовые возможности.</p>
-            
-            <a href="''' + url_for('index') + '''">Вернуться на главную</a>
-            
-            <h2>Список роутов</h2>
-            <ul>
-                <li><a href="''' + url_for('web') + '''">Web-сервер на Flask</a></li>
-                <li><a href="''' + url_for('author') + '''">Об авторе</a></li>
-                <li><a href="''' + url_for('image') + '''">Изображение</a></li>
-                <li><a href="''' + url_for('counter') + '''">Счетчик посещений</a></li>
-                <li><a href="''' + url_for('info') + '''">Перенаправление</a></li>
-                <li><a href="''' + url_for('unauthorized') + '''">401</a></li>
-                <li><a href="''' + url_for('payment_required') + '''">402</a></li>
-                <li><a href="''' + url_for('forbidden') + '''">403</a></li>
-                <li><a href="''' + url_for('method_not_allowed') + '''">405</a></li>
-                <li><a href="''' + url_for('teapot') + '''">418</a></li>
-                <li><a href="''' + url_for('server_error_test') + '''">Тест ошибки 500</a></li>
-            </ul>
-        </main>
-        <footer>
-            Горшков Андрей Максимович, ФБИ-33, 3 курс, 2025
-        </footer>
-    </body>
-</html>'''
-
-@app.route("/lab1/web")
-def web():
-    return '''<!doctype html>
-        <html>
-            <body>
-               <h1>web-сервер на flask</h1>
-            </body>
-        </html>''', 200, {
-            'X-Server': 'sample',
-            'Content-Type': 'text/plain; charset=utf-8'
-        }
-
-@app.route("/lab1/author")
-def author():
-    name = "Горшков Андрей Максимович"
-    group = "ФБИ-33"
-    faculty = "ФБ"
-
-    return '''<!doctype html>
-        <html>
-            <body>
-                <p>Студент: ''' + name + '''</p>
-                <p>Группа: ''' + group + '''</p>
-                <p>Факультет: ''' + faculty + '''</p>
-                <a href="''' + url_for('web') + '''">web</a>
-            </body>
-        </html>'''
-
-@app.route("/lab1/image")
-def image():
-    image_path = url_for("static", filename="shield-hero.jpg")
-    css_path = url_for("static", filename="main.css")
-    
-    html_content = '''<!DOCTYPE html>
-<html>
-    <head>
-        <title>Наофуми Иватани</title>
-        <link rel="stylesheet" href="''' + css_path + '''">
-    </head>
-    <body>
-        <div class="container">
-            <h1>Наофуми Иватани</h1>
-            <img src="''' + image_path + '''" alt="Наофуми Иватани">
-            <p class="description">Главный герой аниме "Восхождение героя щита"</p>
-        </div>
-    </body>
-</html>'''
-    return html_content, 200, {
-        'Content-Language': 'ru',
-        'X-Anime-Character': 'Naofumi Iwatani',
-        'X-Series-Name': 'The Rising of the Shield Hero',
-        'X-Server-Technology': 'Flask Python Framework',
-        'Content-Type': 'text/html; charset=utf-8'
-    }
-count = 0
-@app.route('/lab1/counter')
-def counter():
-    global count
-    count += 1
-    time = str(datetime.datetime.today())
-    url = request.url
-    client_ip = request.remote_addr
-    return '''
-<!doctype html>
-<html>
-    <body>
-        Сколько раз вы сюда заходили ''' + str(count) + '''
-        <hr>
-        Дата и время: ''' + time + '''<br>
-        Запрошенный адрес: ''' + url + '''<br>
-        Ваш IP адрес: ''' + client_ip + '''<br>
-        <hr>
-        <a href="''' + url_for('reset_counter') + '''">Сбросить счетчик</a>
-    </body>
-</html>'''
-
-@app.route('/lab1/reset_counter')
-def reset_counter():
-    global count
-    count = 0
-    return redirect(url_for('counter'))
-
-@app.route("/lab1/info")
-def info():
-    return redirect("/lab1/author")
-
-@app.route("/lab1/created")
-def created():
-    return '''
-<!doctype html>
-<html>
-    <body>
-        <h1>Создано успешно</h1>
-        <div><i>что-то создано</i></div>
-    </body>
-</html>
-''', 201
 
 not_found_logs = []
 
@@ -372,132 +234,3 @@ def internal_server_error(err):
     </body>
 </html>
 ''', 500
-@app.route('/lab2/a')
-def a():
-    return 'без слэша'
-@app.route("/lab2/a/")
-def a2():
-    return 'со слэшем'
-flowers = [
-    {"name": "Роза", "price": 150},
-    {"name": "Тюльпан", "price": 90},
-    {"name": "Незабудка", "price": 120},
-    {"name": "Ромашка", "price": 80}
-]
-
-@app.route('/lab2/flowers')
-def show_flowers():
-    return render_template('flowers.html', flowers=flowers)
-
-
-@app.route('/lab2/flowers/add', methods=['POST'])
-def add_flower():
-    name = request.form.get('name')
-    price = request.form.get('price')
-
-    if not name:
-        return "Вы не задали имя цветка", 400
-    if not price or not price.isdigit():
-        return "Цена должна быть числом", 400
-
-    flowers.append({"name": name, "price": int(price)})
-    return redirect(url_for('show_flowers'))
-
-@app.route('/lab2/flowers/delete/<int:flower_id>')
-def delete_flower(flower_id):
-    if flower_id < 0 or flower_id >= len(flowers):
-        abort(404)
-    else:
-        flowers.pop(flower_id)
-        return redirect(url_for('show_flowers'))
-
-@app.route('/lab2/flowers/clear')
-def clear_flowers():
-    flowers.clear()
-    return redirect(url_for('show_flowers'))
-@app.route('/lab2/example')
-def example():
-    name = 'Горшков Андрей'
-    nomer = '2'
-    group = 'ФБИ-33'
-    kurs = '3 курс'
-    lab_num = '2'
-    fruits = [{'name': 'яблоки', 'price': 100}, 
-              {'name': 'груши', 'price': 100}, 
-              {'name': 'апельсины' , 'price': 100},
-              {'name': 'мандарины', 'price': 100}, 
-              {'name': 'манго', 'price': 100},]
-    return render_template('example.html', name=name, nomer=nomer, kurs=kurs, group=group, lab_num=lab_num, fruits=fruits)
-@app.route('/lab2/')
-def lab2():
-    return render_template('lab2.html')
-@app.route('/lab2/filters')
-def filters():
-    phrase = "0 <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..."
-    return render_template('filters.html', phrase=phrase)
-
-@app.route('/lab2/calc/')
-def calc_default():
-    return redirect('/lab2/calc/1/1')
-
-@app.route('/lab2/calc/<int:a>')
-def calc_one_arg(a):
-    return redirect(f'/lab2/calc/{a}/1')
-
-@app.route('/lab2/calc/<int:a>/<int:b>')
-def calc(a, b):
-    if b == 0:
-        div_result = "Ошибка: деление на ноль"
-    else:
-        div_result = a / b
-
-    return f'''
-<!doctype html>
-<html>
-    <body>
-        <h1>Калькулятор</h1>
-        <p>Первое число: {a}</p>
-        <p>Второе число: {b}</p>
-        <ul>
-            <li>Сумма: {a + b}</li>
-            <li>Разность: {a - b}</li>
-            <li>Произведение: {a * b}</li>
-            <li>Деление: {div_result}</li>
-            <li>Возведение в степень: {a ** b}</li>
-        </ul>
-        <p><a href="/lab2/calc/">Попробовать снова с 1 и 1</a></p>
-    </body>
-</html>
-'''
-books = [
-    {"author": "Фёдор Достоевский", "title": "Преступление и наказание", "genre": "Роман", "pages": 640},
-    {"author": "Лев Толстой", "title": "Война и мир", "genre": "Роман-эпопея", "pages": 1225},
-    {"author": "Александр Пушкин", "title": "Евгений Онегин", "genre": "Роман в стихах", "pages": 320},
-    {"author": "Михаил Булгаков", "title": "Мастер и Маргарита", "genre": "Фантастика", "pages": 480},
-    {"author": "Иван Тургенев", "title": "Отцы и дети", "genre": "Роман", "pages": 370},
-    {"author": "Николай Гоголь", "title": "Мёртвые души", "genre": "Сатира", "pages": 420},
-    {"author": "Антон Чехов", "title": "Палата №6", "genre": "Повесть", "pages": 95},
-    {"author": "Даниэл Киз", "title": "Цветы для Элджернона", "genre": "Фантастика", "pages": 310},
-    {"author": "Джордж Оруэлл", "title": "1984", "genre": "Антиутопия", "pages": 350},
-    {"author": "Рэй Брэдбери", "title": "451° по Фаренгейту", "genre": "Фантастика", "pages": 256}
-]
-
-@app.route('/lab2/books')
-def show_books():
-    return render_template('books.html', books=books)
-Berry = [
-    {"name": "Арбуз", "img": "Berry/ar.jpg", "desc": "Крупная сладкая ягода с красной мякотью и чёрными семенами."},
-    {"name": "Жимолость", "img": "Berry/jim.jpg", "desc": "Синевато-фиолетовая ягода с кисло-сладким вкусом и массой витаминов."},
-    {"name": "Клубника", "img": "Berry/klub.jpg", "desc": "Сочная и ароматная ягода, любима во всём мире."},
-    {"name": "Клюква", "img": "Berry/klukva.jpg", "desc": "Кислая болотная ягода, используется для морсов и варенья."},
-    {"name": "Крыжовник", "img": "Berry/kr.jpg", "desc": "Зелёная или красная ягода с кисло-сладким вкусом, богатая витамином C."},
-    {"name": "Красная смородина", "img": "Berry/krasn.jpg", "desc": "Мелкие ярко-красные ягоды с освежающим кисловатым вкусом."},
-    {"name": "Малина", "img": "Berry/mal.jpg", "desc": "Мягкая и ароматная ягода, часто используется при простуде."},
-    {"name": "Облепиха", "img": "Berry/oblepixa.jpg", "desc": "Оранжевая ягода с терпким вкусом и мощными лечебными свойствами."},
-    {"name": "Виктория", "img": "Berry/vic.jpg", "desc": "Сорт садовой земляники, крупная и ароматная."},
-    {"name": "Ежевика", "img": "Berry/yjev.jpg", "desc": "Тёмно-фиолетовая ягода с насыщенным вкусом и антоцианами."}
-]
-
-@app.route('/lab2/Berry')
-def show_Berry():
-    return render_template('Berry.html', berries=Berry)
