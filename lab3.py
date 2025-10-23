@@ -57,7 +57,6 @@ def payment():
     return render_template('lab3/payment.html', price=price)
 @lab3.route('/lab3/settings')
 def settings():
-    # Получаем параметры из GET-запроса
     color = request.args.get('color')
     bg_color = request.args.get('bg_color')
     font_size = request.args.get('font_size')

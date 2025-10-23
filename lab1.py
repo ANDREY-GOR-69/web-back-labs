@@ -35,8 +35,8 @@ def author():
 
 @lab1.route("/lab1/image")
 def image():
-    image_path = url_for("static", filename="shield-hero.jpg")
-    css_path = url_for("static", filename="main.css")
+    image_path = url_for("static", filename="lab1/shield-hero.jpg")
+    css_path = url_for("static", filename="lab1/main.css")
     
     html_content = '''<!DOCTYPE html>
 <html>
@@ -107,10 +107,12 @@ def created():
 
 @lab1.route("/lab1")
 def lab():
+    css_path = url_for("static", filename="lab1/main.css")
     return '''<!doctype html>
 <html>
     <head>
         <title>Лабораторная 1</title>
+        <link rel="stylesheet" href="''' + css_path + '''">
     </head>
     <body>
         <header>

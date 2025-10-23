@@ -72,7 +72,7 @@ def show_books():
 @lab2.route('/lab2/Berry')
 def show_Berry():
     berries = [
-        {"name": "Арбуз", "img": "Berry/ar.jpg", "desc": "Крупная сладкая ягода"},
-        {"name": "Клубника", "img": "Berry/klub.jpg", "desc": "Сочная и ароматная ягода"},
+        {"name": "Арбуз", "img": "lab2/Berry/ar.jpg", "desc": "Крупная сладкая ягода"},
+        {"name": "Клубника", "img": "lab2/Berry/klub.jpg", "desc": "Сочная и ароматная ягода"},
     ]
     return render_template('Berry.html', berries=berries)
