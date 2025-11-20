@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, session
 import psycopg2
 from psycopg2.extras import RealDictCursor
+from werkzeug.security import check_password_hash, generate_password_hash
 
 lab5 = Blueprint('lab5', __name__)
 
@@ -19,7 +20,7 @@ def db_close(conn, cur):
     cur.close()
     conn.close()
 
-@lab5.route('/lab5')
+@lab5.route('/lab5/')
 def lab():
     return render_template('lab5/lab5.html', login=session.get('login'))
 
@@ -42,7 +43,7 @@ def login():
         db_close(conn, cur)
         return render_template('lab5/login.html', error='Логин или пароль неверный')
     
-    if user['password'] != password:
+    if not check_password_hash(user['password'], password):
         db_close(conn, cur)
         return render_template('lab5/login.html', error='Логин или пароль неверный')
     
@@ -67,8 +68,9 @@ def register():
     if cur.fetchone():
         db_close(conn, cur)
         return render_template('lab5/register.html', error="Такой пользователь уже существует")
-
-    cur.execute("INSERT INTO users (login, password) VALUES (%s, %s);", (login, password))
+    
+    password_hash = generate_password_hash(password)
+    cur.execute("INSERT INTO users (login, password) VALUES (%s, %s);", (login, password_hash))
     
     db_close(conn, cur)
     return render_template('lab5/success.html', login=login)
