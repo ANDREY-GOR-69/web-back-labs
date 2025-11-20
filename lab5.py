@@ -4,6 +4,21 @@ from psycopg2.extras import RealDictCursor
 
 lab5 = Blueprint('lab5', __name__)
 
+def db_connect():
+    conn = psycopg2.connect(
+        host='127.0.0.1',
+        database='andrey_gorshkov_knowledge_base',
+        user='andrey_gorshkov_knowledge_base',
+        password='091205051209'
+    )
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    return conn, cur
+
+def db_close(conn, cur):
+    conn.commit()
+    cur.close()
+    conn.close()
+
 @lab5.route('/lab5')
 def lab():
     return render_template('lab5/lab5.html', login=session.get('login'))
@@ -12,33 +27,27 @@ def lab():
 def login():
     if request.method == 'GET':
         return render_template('lab5/login.html')
+    
     login = request.form.get('login')
     password = request.form.get('password')
 
     if not login or not password:
         return render_template('lab5/login.html', error='Заполните поля')
-    conn = psycopg2.connect(
-        host='127.0.0.1',
-        database='andrey_gorshkov_knowledge_base',
-        user='andrey_gorshkov_knowledge_base',
-        password='091205051209'
-    )
-    cur = conn.cursor(cursor_factory=RealDictCursor)
+    
+    conn, cur = db_connect()
     cur.execute("SELECT login, password FROM users WHERE login = %s;", (login,))
     user = cur.fetchone()
+    
     if not user:
-        cur.close()
-        conn.close()
-        return render_template('lab5/login.html',
-                               error='Логин или пароль неверный')
+        db_close(conn, cur)
+        return render_template('lab5/login.html', error='Логин или пароль неверный')
+    
     if user['password'] != password:
-        cur.close()
-        conn.close()
-        return render_template('lab5/login.html',
-                               error='Логин или пароль неверный')
+        db_close(conn, cur)
+        return render_template('lab5/login.html', error='Логин или пароль неверный')
+    
     session['login'] = login
-    cur.close()
-    conn.close()
+    db_close(conn, cur)
     return render_template('lab5/success_login.html', login=login)
 
 @lab5.route('/lab5/register', methods=['GET', 'POST'])
@@ -52,30 +61,16 @@ def register():
     if not login or not password:
         return render_template('lab5/register.html', error='Заполните все поля')
 
-    conn = psycopg2.connect(
-        host='127.0.0.1',
-        database='andrey_gorshkov_knowledge_base',
-        user='andrey_gorshkov_knowledge_base',
-        password='091205051209'
-    )
-    cur = conn.cursor()
-
+    conn, cur = db_connect()
+    
     cur.execute("SELECT login FROM users WHERE login = %s;", (login,))
     if cur.fetchone():
-        cur.close()
-        conn.close()
-        return render_template('lab5/register.html',
-                               error="Такой пользователь уже существует")
+        db_close(conn, cur)
+        return render_template('lab5/register.html', error="Такой пользователь уже существует")
 
-    cur.execute(
-        "INSERT INTO users (login, password) VALUES (%s, %s);",
-        (login, password)
-    )
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
+    cur.execute("INSERT INTO users (login, password) VALUES (%s, %s);", (login, password))
+    
+    db_close(conn, cur)
     return render_template('lab5/success.html', login=login)
 
 @lab5.route('/lab5/list')
@@ -85,3 +80,8 @@ def list_articles():
 @lab5.route('/lab5/create')
 def create_article():
     return "Создание статьи"
+
+@lab5.route('/lab5/logout')
+def logout():
+    session.pop('login', None)
+    return render_template('lab5/logout.html')
