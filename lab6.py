@@ -12,7 +12,7 @@ def get_db_connection():
     )
 
 @lab6.route('/lab6/')
-def main():
+def lab():
     return render_template('lab6/lab6.html')
 
 
