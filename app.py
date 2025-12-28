@@ -15,6 +15,7 @@ from lab5 import lab5
 from lab6 import lab6
 from lab7 import lab7
 from lab8 import lab8
+from lab9 import lab9
 app = Flask(__name__)
 
 login_manager = LoginManager()
@@ -53,6 +54,7 @@ app.register_blueprint(lab5)
 app.register_blueprint(lab6)
 app.register_blueprint(lab7)
 app.register_blueprint(lab8)
+app.register_blueprint(lab9)
 
 @app.route("/")
 @app.route("/index")
@@ -76,6 +78,7 @@ def index():
                 <li><a href="''' + url_for('lab6.lab') + '''">Шестая лабораторная</a></li>
                 <li><a href="''' + url_for('lab7.lab') + '''">Седьмая лабораторная</a></li>
                 <li><a href="''' + url_for('lab8.lab') + '''">Восьмая лабораторная</a></li>
+                <li><a href="''' + url_for('lab9.lab') + '''">Девятая лабораторная</a></li>
             </menu>
         </main>
         <footer>
